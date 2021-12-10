@@ -27,6 +27,9 @@ namespace MatchGame
         int tenthsOfSecondsElapsed;
         int matchesFound;
 
+        //Dictionary to hold the placements of emojis
+        IDictionary<string, string> textBlockLocations = new Dictionary<string, string>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -47,7 +50,7 @@ namespace MatchGame
             }
         }
 
-        private void SetUpGame()
+        public void SetUpGame()
         {
             List<string> animalEmoji = new List<string>()
             {
@@ -62,6 +65,9 @@ namespace MatchGame
             };
 
             Random random = new Random();
+            int count = 0;
+            //Clears Dictionary for New Game
+            textBlockLocations.Clear();
 
             foreach (TextBlock textBlock in mainGrid.Children.OfType<TextBlock>())
             {
@@ -70,8 +76,10 @@ namespace MatchGame
                     textBlock.Visibility = Visibility.Visible;
                     int index = random.Next(animalEmoji.Count);
                     string nextEmoji = animalEmoji[index];
-                    textBlock.Text = nextEmoji;
+                    textBlockLocations.Add("textBlock_" + count.ToString(), nextEmoji);
+                    textBlock.Text = "?";
                     animalEmoji.RemoveAt(index);
+                    count++;
                 }
             }
             timer.Start();
@@ -79,28 +87,32 @@ namespace MatchGame
             matchesFound = 0;
         }
 
+        string nameLastTextBlock;
         TextBlock lastTextBlockClicked;
         bool findingMatch = false;
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
             TextBlock textBlock = sender as TextBlock;
-           if (findingMatch == false)
+
+            if (findingMatch == false)
             {
-                textBlock.Visibility = Visibility.Hidden;
+                textBlock.Text = textBlockLocations[textBlock.Name];
+                nameLastTextBlock = textBlock.Name;
                 lastTextBlockClicked = textBlock;
                 findingMatch = true;    
             }
-            else if (textBlock.Text == lastTextBlockClicked.Text)
+            else if (textBlockLocations[textBlock.Name] == textBlockLocations[nameLastTextBlock])
             {
                 matchesFound++;
-                textBlock.Visibility = Visibility.Hidden;
+                textBlock.Text = textBlockLocations[textBlock.Name];
                 findingMatch = false;
             }
             else
             {
-                lastTextBlockClicked.Visibility = Visibility.Visible;
-                findingMatch= false;
+                lastTextBlockClicked.Text = "?";
+                textBlock.Text = "?";
+                findingMatch = false;
             }
         }
 

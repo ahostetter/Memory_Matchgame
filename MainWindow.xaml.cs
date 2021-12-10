@@ -50,7 +50,7 @@ namespace MatchGame
             }
         }
 
-        public void SetUpGame()
+        private void SetUpGame()
         {
             List<string> animalEmoji = new List<string>()
             {
@@ -102,7 +102,7 @@ namespace MatchGame
                 lastTextBlockClicked = textBlock;
                 findingMatch = true;    
             }
-            else if (textBlockLocations[textBlock.Name] == textBlockLocations[nameLastTextBlock])
+            else if ((textBlockLocations[textBlock.Name] == textBlockLocations[nameLastTextBlock]) && (lastTextBlockClicked.Name != textBlock.Name))
             {
                 matchesFound++;
                 textBlock.Text = textBlockLocations[textBlock.Name];

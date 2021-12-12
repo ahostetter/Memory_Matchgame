@@ -87,7 +87,7 @@ namespace MatchGame
             matchesFound = 0;
         }
 
-        string nameLastTextBlock;
+        string nameLastTextBlock = null;
         TextBlock lastTextBlockClicked;
         bool findingMatch = false;
 
@@ -95,21 +95,23 @@ namespace MatchGame
         {
             TextBlock textBlock = sender as TextBlock;
 
-            if (findingMatch == false)
+            if (findingMatch == false && textBlock.Name != nameLastTextBlock)
             {
                 textBlock.Text = textBlockLocations[textBlock.Name];
                 nameLastTextBlock = textBlock.Name;
                 lastTextBlockClicked = textBlock;
                 findingMatch = true;
             }
-            else if ((textBlockLocations[textBlock.Name] == textBlockLocations[nameLastTextBlock]) && (lastTextBlockClicked.Name != textBlock.Name))
+            else if (textBlockLocations[textBlock.Name] == textBlockLocations[nameLastTextBlock] && textBlock.Name != lastTextBlockClicked.Name)
             {
                 matchesFound++;
-                textBlock.Text = textBlockLocations[textBlock.Name];
+                lastTextBlockClicked.Visibility = Visibility.Hidden;
+                textBlock.Visibility = Visibility.Hidden;
                 findingMatch = false;
             }
             else
             {
+                nameLastTextBlock = null;
                 lastTextBlockClicked.Text = "?";
                 textBlock.Text = "?";
                 findingMatch = false;
